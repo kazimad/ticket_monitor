@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -27,30 +28,31 @@ public class GetMonitorView_AsyncTask extends AsyncTask<Void, Void, Void> {
     public static final String MON = "MON";
     private int numberTicket;
     private int numberWindow;
+    public ObjectInputStream objectInputStream;
+    public ObjectOutputStream objectOutputStream;
 
     @Override
     protected Void doInBackground(Void... params) {
         InetAddress serverAddr = null;
+
         try {
             serverAddr = InetAddress.getByName(IP);
-
             socket = new Socket(serverAddr, PORT);
-
             Log.d(MainActivity.mylog, "socket is");
-            OutputStream osToServerGetTicket = socket.getOutputStream();
-            PrintStream printStream = new PrintStream(osToServerGetTicket);
-            printStream.print(MON);
-            osToServerGetTicket.flush();
+
+
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectOutputStream.writeObject(MON);
+            objectOutputStream.flush();
             Log.d(MainActivity.mylog, "print MON ");
 
 
-            if (osToServerGetTicket != null) {
+            if (objectOutputStream != null) {
                 Log.d(MainActivity.mylog, "OutputStream!=null");
             }
 
 
-            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
 
             while (true) {
 
@@ -60,16 +62,21 @@ public class GetMonitorView_AsyncTask extends AsyncTask<Void, Void, Void> {
                 numberWindow = myBundle.getNumberWindow();
                 numberTicket = myBundle.getNumberTicket();
 
-                switch (numberWindow){
-                    case 1: MainActivity.ticket1.setText(numberTicket);
+                switch (numberWindow) {
+                    case 1:
+                        MainActivity.ticket1.setText(numberTicket);
                         break;
-                    case 2: MainActivity.ticket1.setText(numberTicket);
+                    case 2:
+                        MainActivity.ticket1.setText(numberTicket);
                         break;
-                    case 3: MainActivity.ticket1.setText(numberTicket);
+                    case 3:
+                        MainActivity.ticket1.setText(numberTicket);
                         break;
-                    case 4: MainActivity.ticket1.setText(numberTicket);
+                    case 4:
+                        MainActivity.ticket1.setText(numberTicket);
                         break;
-                    case 5: MainActivity.ticket1.setText(numberTicket);
+                    case 5:
+                        MainActivity.ticket1.setText(numberTicket);
                         break;
                 }
             }
