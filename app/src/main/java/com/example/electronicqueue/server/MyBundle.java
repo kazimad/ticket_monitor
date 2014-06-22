@@ -1,4 +1,4 @@
-package com.example.ticket_monitor.app;
+package com.example.electronicqueue.server;
 
 import java.io.Serializable;
 

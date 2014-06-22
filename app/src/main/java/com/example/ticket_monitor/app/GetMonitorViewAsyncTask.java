@@ -3,33 +3,31 @@ package com.example.ticket_monitor.app;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
+import com.example.electronicqueue.server.MyBundle;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OptionalDataException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.StreamCorruptedException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 /**
  * Created by Олег on 19.06.2014.
  */
-public class GetMonitorView_AsyncTask extends AsyncTask<Void, Void, Void> {
+public class GetMonitorViewAsyncTask extends AsyncTask<Void, Void, Void> {
 
     public static final String IP = "10.0.0.107";
     public static final int PORT = 8080;
     String response = "";
     Socket socket;
-    public static final String MON = "MON";
+    public static final String MON = "mon";
     private int numberTicket;
     private int numberWindow;
     public ObjectInputStream objectInputStream;
     public ObjectOutputStream objectOutputStream;
+    public ArrayList<MyBundle> list;
 
     @Override
     protected Void doInBackground(Void... params) {
@@ -42,7 +40,7 @@ public class GetMonitorView_AsyncTask extends AsyncTask<Void, Void, Void> {
 
 
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            objectOutputStream.writeObject(MON);
+            objectOutputStream.writeUTF(MON);
             objectOutputStream.flush();
             Log.d(MainActivity.mylog, "print MON ");
 
@@ -57,26 +55,29 @@ public class GetMonitorView_AsyncTask extends AsyncTask<Void, Void, Void> {
             while (true) {
 
                 Object object = objectInputStream.readObject();
+                list = (ArrayList<MyBundle>) object;
 
-                MyBundle myBundle = (MyBundle) object;
-                numberWindow = myBundle.getNumberWindow();
-                numberTicket = myBundle.getNumberTicket();
+//                MyBundle myBundle = (MyBundle) object;
+                for (MyBundle myBundle:  list) {
 
+                    numberWindow = myBundle.getNumberWindow();
+                    numberTicket = myBundle.getNumberTicket();
+                }
                 switch (numberWindow) {
                     case 1:
                         MainActivity.ticket1.setText(numberTicket);
                         break;
                     case 2:
-                        MainActivity.ticket1.setText(numberTicket);
+                        MainActivity.ticket2.setText(numberTicket);
                         break;
                     case 3:
-                        MainActivity.ticket1.setText(numberTicket);
+                        MainActivity.ticket3.setText(numberTicket);
                         break;
                     case 4:
-                        MainActivity.ticket1.setText(numberTicket);
+                        MainActivity.ticket4.setText(numberTicket);
                         break;
                     case 5:
-                        MainActivity.ticket1.setText(numberTicket);
+                        MainActivity.ticket5.setText(numberTicket);
                         break;
                 }
             }
@@ -108,6 +109,13 @@ public class GetMonitorView_AsyncTask extends AsyncTask<Void, Void, Void> {
             e.printStackTrace();
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
         return null;
 //    } catch (UnknownHostException e) {

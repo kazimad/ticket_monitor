@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
         return true;
     }
     private void monitorRefresh() {
-        GetMonitorView_AsyncTask getMonitorViewAsyncTask = new GetMonitorView_AsyncTask();
+        GetMonitorViewAsyncTask getMonitorViewAsyncTask = new GetMonitorViewAsyncTask();
         getMonitorViewAsyncTask.execute();
     }
 
